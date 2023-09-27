@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import universidadgrupo80.accesoADatos.AlumnoData;
+import universidadgrupo80.accesoADatos.InscripcionData;
 import universidadgrupo80.accesoADatos.MateriaData;
 import universidadgrupo80.entidades.Alumno;
 import universidadgrupo80.entidades.Materia;
@@ -18,26 +19,28 @@ import universidadgrupo80.entidades.Materia;
  * @author Usuario
  */
 public class cargaDeNotas extends javax.swing.JInternalFrame {
+
     AlumnoData aluData = new AlumnoData();
+    MateriaData mateData = new MateriaData();
+    InscripcionData inscData = new InscripcionData();
+
+    DefaultTableModel modelo = new DefaultTableModel();
+
     Alumno alumn = new Alumno();
-    DefaultTableModel modelo=new DefaultTableModel();
-    MateriaData mateData =new MateriaData ();
-    Materia mat =new Materia ();
-    
+    Materia mat = new Materia();
+
     /**
      * Creates new form cargaDeNotas
      */
     public cargaDeNotas() {
         initComponents();
-        armarCabecera ();
+        armarCabecera();
         cargarDatos(mat);
         aluData = new AlumnoData();
         List<Alumno> alumm = new ArrayList<>();
         alumm = aluData.listarAlumnos();
-            for (Alumno alumn : alumm) {
+        for (Alumno alumn : alumm) {
             this.jCBAlumnos.addItem(alumn);
-           
-            
         }
     }
 
@@ -159,6 +162,7 @@ public class cargaDeNotas extends javax.swing.JInternalFrame {
         // TODO add your handling code here
         aluData.listarAlumnos();
         alumn = (Alumno) jCBAlumnos.getSelectedItem();
+        cargarMateria();
     }//GEN-LAST:event_jCBAlumnosActionPerformed
 
     private void jBSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSalirActionPerformed
@@ -176,14 +180,29 @@ public class cargaDeNotas extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTNotas;
     // End of variables declaration//GEN-END:variables
-private void armarCabecera (){
-    modelo.addColumn("Codigo");
-    modelo.addColumn("Nombre");
-    modelo.addColumn("Nota");
-    jTNotas.setModel(modelo);
-}
-private void cargarDatos (Materia mat ){
-    modelo.addRow(new Object[]{mat.getIdMateria(),mat.getNombre()});
-    
-}
+private void armarCabecera() {
+        modelo.addColumn("Codigo");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Nota");
+        jTNotas.setModel(modelo);
+    }
+
+    private void cargarDatos(Materia mat) {
+        modelo.addRow(new Object[]{mat.getIdMateria(), mat.getNombre()});
+
+    }
+
+    private void borrarFilaTabla() {
+        int indice = modelo.getRowCount() - 1;
+
+        for (int i = indice; i >= 0; i--) {
+            modelo.removeRow(i);
+        }
+    }
+
+    private void cargarMateria() {
+        borrarFilaTabla();
+        Alumno selec = (Alumno) jCBAlumnos.getSelectedItem();
+        inscData.obtenerMateriasCursadas(selec.getIdAlumno()).forEach(materia -> cargarDatos(materia));
+    }
 }
