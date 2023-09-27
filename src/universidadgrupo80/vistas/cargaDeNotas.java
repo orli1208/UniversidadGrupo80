@@ -12,6 +12,7 @@ import universidadgrupo80.accesoADatos.AlumnoData;
 import universidadgrupo80.accesoADatos.InscripcionData;
 import universidadgrupo80.accesoADatos.MateriaData;
 import universidadgrupo80.entidades.Alumno;
+import universidadgrupo80.entidades.Inscripcion;
 import universidadgrupo80.entidades.Materia;
 
 /**
@@ -19,7 +20,7 @@ import universidadgrupo80.entidades.Materia;
  * @author Usuario
  */
 public class cargaDeNotas extends javax.swing.JInternalFrame {
-
+    Inscripcion insc = new Inscripcion();
     AlumnoData aluData = new AlumnoData();
     MateriaData mateData = new MateriaData();
     InscripcionData inscData = new InscripcionData();
@@ -107,6 +108,11 @@ public class cargaDeNotas extends javax.swing.JInternalFrame {
 
         jBGuardar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jBGuardar.setText("Guardar");
+        jBGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBGuardarActionPerformed(evt);
+            }
+        });
 
         jBSalir.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jBSalir.setText("Salir");
@@ -169,6 +175,28 @@ public class cargaDeNotas extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_jBSalirActionPerformed
+
+    private void jBGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardarActionPerformed
+        // TODO add your handling code here:
+        int filaSeleccionada = jTNotas.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            Alumno a = (Alumno) jCBAlumnos.getSelectedItem();
+            int idMateria = (Integer) modelo.getValueAt(filaSeleccionada, 0);
+            String nombreMateria = (String) modelo.getValueAt(filaSeleccionada, 1);
+
+            // Corrección: Obtener la nota desde un JComboBox
+            int nota = (Integer) jTNotas.getSelectedColumn();
+
+            Materia m = new Materia(idMateria, nombreMateria, nota, true);
+
+            Inscripcion i = new Inscripcion(a, m, 0);
+
+            // Corrección: Llamar al método actualizarNota con los parámetros correctos
+            inscData.actulizarNota(idMateria, a.getIdAlumno(), nota);
+
+            borrarFilaTabla();
+}
+    }//GEN-LAST:event_jBGuardarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
